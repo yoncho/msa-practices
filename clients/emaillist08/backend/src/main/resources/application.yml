@@ -4,18 +4,18 @@ spring:
       name: emaillist
    profiles:
       active: development
-      
-      
+   
 ---
-# common spring boot configuration
+# common spring 
 spring:
    mvc:
       static-path-pattern: /assets/**
       throw-exception-if-no-handler-found: true
    web:
       resources:
+         # Locations of static resources
          static-locations: classpath:/assets/
-
+         
    thymeleaf:
       prefix : classpath:templates/
       check-template-location: true
@@ -23,67 +23,75 @@ spring:
       suffix : .html
       cache : false
 
-mybatis:
-   config-location: classpath:mybatis/configuration.xml
-
-logging:
-   pattern:
-      console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
-   level:
-      root: INFO
-
-
-
+      
 ---
 # development profile: spring boot configuration
 spring:
    config:
       activate:
          on-profile: development
-
+      
    devtools:
       livereload:
          enabled: true
-                     
-   datasource:
-      driver-class-name: org.mariadb.jdbc.Driver
-      url: jdbc:mariadb://192.168.0.181:3307/webdb?charset=utf8
-      username: mysite
-      password: mysite
-      hikari:
-         minimum-idle: 10
-         maximum-pool-size: 20
-   
+         
 server:
    port: 8080
    servlet:
       context-path: /
       encoding:
-         charset: utf-8
+         charset: UTF-8
          enabled: true
-         
 
+logging:
+   pattern:
+      console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+   level:
+      root: INFO
+      
+eureka:
+   client:
+      fetchRegistry: true
+      registerWithEureka: false
+      serviceUrl:
+         defaultZone: http://localhost:8761/eureka      
 
 ---
+
 # production profile: spring boot configuration
 spring:
    config:
       activate:
          on-profile: production
 
-   datasource:
-      driver-class-name: org.mariadb.jdbc.Driver
-      url: jdbc:mariadb://192.168.0.181:3307/webdb?charset=utf8
-      username: mysite
-      password: mysite
-      hikari:
-         minimum-idle: 10
-         maximum-pool-size: 20
-         
 server:
-   port: 8088
+   port: 8081
    servlet:
       context-path: /
       encoding:
          charset: UTF-8
          enabled: true
+         
+logging:
+   pattern:
+      file: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+   logback:
+      rollingpolicy:
+         file-name-pattern: "logs/${spring.application.name}.%d{yyyy-MM-dd}.%i.log.zip"
+         max-file-size: 10MB
+         max-history: 10
+   file:
+      name: logs/${spring.application.name}.log
+   level:
+      root: WARN
+      com:
+         poscodx:
+            emaillist:
+               exception: ERROR         
+               
+eureka:
+   client:
+      fetchRegistry: true
+      registerWithEureka: false
+      serviceUrl:
+         defaultZone: http://192.168.0.180:8761/eureka                    

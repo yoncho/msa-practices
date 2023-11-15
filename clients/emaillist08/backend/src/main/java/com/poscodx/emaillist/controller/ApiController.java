@@ -1,40 +1,49 @@
 package com.poscodx.emaillist.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Map;
+
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
-import com.poscodx.emaillist.dto.JsonResult;
-import com.poscodx.emaillist.repository.EmaillistRepository;
 import com.poscodx.emaillist.vo.EmaillistVo;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequestMapping("/api")
 public class ApiController {
-	@Autowired
-	private EmaillistRepository emaillistRepository;
+	private final RestTemplate restTemplate;
 	
-	@GetMapping("/api")
-	public ResponseEntity<JsonResult> read(
-			@RequestParam(value="kw", required=true, defaultValue="") String keyword) {
-		log.info("Request[GET /api]" + keyword);
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.body(JsonResult.success(emaillistRepository.findAll(keyword)));
+	public ApiController(@LoadBalanced RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
 	}
 	
-	@PostMapping("/api")
-	public ResponseEntity<JsonResult> insert(@RequestBody EmaillistVo email) {
-		log.info("Request[POST /api]:" + email);
+	@GetMapping
+	public ResponseEntity<?> read(
+			@RequestParam(value="kw", required=true, defaultValue="") String keyword) {
+		log.info("Request[GET /api]" + keyword);
+		Map<String, Object> response = restTemplate.getForObject("https://service-emaillist/?kw="+keyword, Map.class);
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.body(JsonResult.success(emaillistRepository.insert(email)));
+				.body(response);
+	}
+	
+	@PostMapping
+	public ResponseEntity<?> insert(@RequestBody EmaillistVo email) {
+		log.info("Request[POST /api]:" + email);
+		
+		Map<String, Object> response = restTemplate.postForObject("https://service-emaillist/" ,email, Map.class);
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(response);
 	}
 }
