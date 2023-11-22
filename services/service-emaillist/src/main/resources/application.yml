@@ -32,9 +32,9 @@ spring:
                      
    datasource:
       driver-class-name: org.mariadb.jdbc.Driver
-      url: jdbc:mariadb://localhost:3307/webdb?charset=utf8
+      url: jdbc:mariadb://192.168.0.181:3307/webdb?charset=utf8
       username: mysite
-      password: mysite1
+      password: mysite
       hikari:
          minimum-idle: 10
          maximum-pool-size: 20
@@ -65,7 +65,7 @@ spring:
       driver-class-name: org.mariadb.jdbc.Driver
       url: jdbc:mariadb://192.168.0.181:3307/webdb?charset=utf8
       username: mysite
-      password: mysite1
+      password: mysite
       hikari:
          minimum-idle: 10
          maximum-pool-size: 20

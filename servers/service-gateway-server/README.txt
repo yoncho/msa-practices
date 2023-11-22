@@ -10,7 +10,11 @@ Spring Cloud Gateway
 	<artifactId>spring-cloud-starter-gateway</artifactId>
 </dependency>
 
-
+<!-- Spring Cloud Discovery: Netflix Eureka Client -->
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
 
 
 ===
@@ -34,7 +38,7 @@ management:
          exposure:
             include: "*"
 
-3) Eureka Client(fetch ant Register)
+3) Eureka Client(fetch)
 	
 eureka:
    client:
@@ -91,6 +95,7 @@ spring:
 
    - 외부 리소스를 못 가져오는 단점
    - XSS 등과 같은 보안 취약점을 사전에 방지할 수 있다.
+   - SOP 위반
 
 4. CORS(Cross Orign Resource Sharing) Error
 	<p>
